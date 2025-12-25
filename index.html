@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>Notebook-我的手账本</title>
+  <title>Notebook - 我的手账本</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     /* --- 基础与配色 --- */
@@ -66,7 +66,7 @@
       justify-content: center;
       align-items: center;
       gap: 15px;
-      margin-bottom: 20px;
+      margin-top: 20px; /* 新增：与上方的文本框保持间距 */
     }
     .action-button {
       color: #fff;
@@ -126,66 +126,30 @@
     /* --- 底部 --- */
     footer { text-align: center; color: var(--muted-color); font-size: 0.8rem; margin-top: 40px; padding-bottom: 20px; }
 
-
     /* --- 移动端适配 (响应式设计) --- */
     @media (max-width: 768px) {
-      .container {
-        padding: 15px;
-      }
+      .container { padding: 15px; }
+      header { margin: 15px 0 20px; }
+      h1 { font-size: 2rem; }
+      .nav { gap: 8px; padding-bottom: 15px; margin-bottom: 15px; }
+      .nav-button { padding: 6px 14px; font-size: 0.9rem; }
 
-      header {
-        margin: 15px 0 20px;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      .nav {
-        gap: 8px;
-        padding-bottom: 15px;
-        margin-bottom: 15px;
-      }
-      
-      .nav-button {
-        padding: 6px 14px;
-        font-size: 0.9rem;
-      }
-
-      /* 关键改动：将操作按钮垂直堆叠，方便移动端点击 */
       .actions-bar {
         flex-direction: column;
-        align-items: stretch; /* 让内部元素撑满容器宽度 */
+        align-items: stretch;
         gap: 10px;
+        margin-top: 15px; /* 移动端间距微调 */
       }
-
-      .action-button {
-        width: 100%; /* 按钮宽度100% */
-      }
-      
+      .action-button { width: 100%; }
       .save-status {
-        min-width: 0; /* 重置最小宽度 */
-        text-align: center; /* 居中显示保存状态 */
+        min-width: 0;
+        text-align: center;
         margin: 5px 0;
       }
-
-      .page {
-        padding: 20px 15px;
-      }
-
-      h2 {
-        font-size: 1.6rem;
-      }
-
-      .note-area {
-        min-height: 200px; /* 减小在小屏幕上的最小高度 */
-        font-size: 1rem;
-      }
-
-      footer {
-        margin-top: 30px;
-        padding: 0 10px 15px;
-      }
+      .page { padding: 20px 15px; }
+      h2 { font-size: 1.6rem; }
+      .note-area { min-height: 200px; font-size: 1rem; }
+      footer { margin-top: 30px; padding: 0 10px 15px; }
     }
   </style>
 </head>
@@ -207,49 +171,90 @@
     <button class="nav-button" data-target="money">💰钱钱</button>
   </nav>
 
-  <!-- 更新：操作按钮栏 -->
-  <div class="actions-bar">
-    <button id="save-current-btn" class="action-button save-btn">保存本页</button>
-    <button id="save-all-btn" class="action-button save-all">✨ 保存全部</button>
-    <span id="save-status" class="save-status"></span>
-    <button id="export-txt-btn" class="action-button export-btn">导出TXT</button>
-    <button id="export-csv-btn" class="action-button export-btn">导出CSV</button>
-  </div>
-
   <main>
+    <!-- 每个页面现在都包含自己的操作按钮 -->
     <section id="book" class="page active">
       <h2>读书笔记</h2>
       <textarea class="note-area" data-persist="book-notes" placeholder=""></textarea>
+      <div class="actions-bar">
+        <button class="action-button save-btn save-current-btn">保存本页</button>
+        <button class="action-button save-all save-all-btn">✨ 保存全部</button>
+        <span class="save-status"></span>
+        <button class="action-button export-btn export-txt-btn">导出TXT</button>
+        <button class="action-button export-btn export-csv-btn">导出CSV</button>
+      </div>
     </section>
 
     <section id="podcast" class="page">
       <h2>播客</h2>
       <textarea class="note-area" data-persist="podcast-notes" placeholder=""></textarea>
+      <div class="actions-bar">
+        <button class="action-button save-btn save-current-btn">保存本页</button>
+        <button class="action-button save-all save-all-btn">✨ 保存全部</button>
+        <span class="save-status"></span>
+        <button class="action-button export-btn export-txt-btn">导出TXT</button>
+        <button class="action-button export-btn export-csv-btn">导出CSV</button>
+      </div>
     </section>
 
     <section id="lyrics" class="page">
       <h2>歌词</h2>
       <textarea class="note-area" data-persist="lyrics-notes" placeholder=""></textarea>
+      <div class="actions-bar">
+        <button class="action-button save-btn save-current-btn">保存本页</button>
+        <button class="action-button save-all save-all-btn">✨ 保存全部</button>
+        <span class="save-status"></span>
+        <button class="action-button export-btn export-txt-btn">导出TXT</button>
+        <button class="action-button export-btn export-csv-btn">导出CSV</button>
+      </div>
     </section>
 
     <section id="poems" class="page">
       <h2>写诗</h2>
       <textarea class="note-area" data-persist="poems-notes" placeholder=""></textarea>
+      <div class="actions-bar">
+        <button class="action-button save-btn save-current-btn">保存本页</button>
+        <button class="action-button save-all save-all-btn">✨ 保存全部</button>
+        <span class="save-status"></span>
+        <button class="action-button export-btn export-txt-btn">导出TXT</button>
+        <button class="action-button export-btn export-csv-btn">导出CSV</button>
+      </div>
     </section>
 
     <section id="inspire" class="page">
       <h2>灵感</h2>
       <textarea class="note-area" data-persist="inspire-notes" placeholder="捕捉那些稍纵即逝的灵感火花"></textarea>
+      <div class="actions-bar">
+        <button class="action-button save-btn save-current-btn">保存本页</button>
+        <button class="action-button save-all save-all-btn">✨ 保存全部</button>
+        <span class="save-status"></span>
+        <button class="action-button export-btn export-txt-btn">导出TXT</button>
+        <button class="action-button export-btn export-csv-btn">导出CSV</button>
+      </div>
     </section>
 
     <section id="food" class="page">
       <h2>食物</h2>
       <textarea class="note-area" data-persist="food-notes" placeholder=""></textarea>
+      <div class="actions-bar">
+        <button class="action-button save-btn save-current-btn">保存本页</button>
+        <button class="action-button save-all save-all-btn">✨ 保存全部</button>
+        <span class="save-status"></span>
+        <button class="action-button export-btn export-txt-btn">导出TXT</button>
+        <button class="action-button export-btn export-csv-btn">导出CSV</button>
+      </div>
     </section>
 
     <section id="money" class="page">
       <h2>金钱</h2>
       <textarea class="note-area" data-persist="money-notes" placeholder=""></textarea>
+      <div class="actions-bar">
+        <button class="action-button save-btn save-current-btn">保存本页</button>
+        <button class="action-button save-all save-all-btn">✨ 保存全部</button>
+        <span class="save-status"></span>
+        <button class="action-button export-btn export-txt-btn">导出TXT</button>
+        <button class="action-button export-btn export-csv-btn">导出CSV</button>
+      </div>
     </section>
   </main>
 
@@ -264,17 +269,11 @@
     const nav = document.getElementById('notebook-nav');
     const pages = document.querySelectorAll('.page');
     const textareas = document.querySelectorAll('.note-area');
-    const saveCurrentBtn = document.getElementById('save-current-btn');
-    const saveAllBtn = document.getElementById('save-all-btn');
-    const saveStatus = document.getElementById('save-status');
-    const exportTxtBtn = document.getElementById('export-txt-btn'); // 新增
-    const exportCsvBtn = document.getElementById('export-csv-btn'); // 新增
-
+    
     let statusTimer;
 
     // --- 辅助函数 ---
 
-    // 获取格式化的日期字符串 YYYY-MM-DD
     function getFormattedDate() {
         const date = new Date();
         const year = date.getFullYear();
@@ -283,7 +282,6 @@
         return `${year}-${month}-${day}`;
     }
 
-    // 创建并触发下载
     function triggerDownload(blob, filename) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -297,8 +295,13 @@
 
     // --- 功能函数 ---
 
+    // 更新：现在函数会在当前激活的页面内查找 status 元素
     function showSaveStatus(message) {
       clearTimeout(statusTimer);
+      const activePage = document.querySelector('.page.active');
+      if (!activePage) return;
+      const saveStatus = activePage.querySelector('.save-status');
+      
       saveStatus.textContent = message;
       saveStatus.classList.add('visible');
       statusTimer = setTimeout(() => {
@@ -306,6 +309,7 @@
       }, 2000);
     }
 
+    // 以下函数逻辑不变，因为它们总是操作 .active 页面或所有页面
     function saveCurrentNote() {
       const activePage = document.querySelector('.page.active');
       if (!activePage) return;
@@ -324,16 +328,13 @@
       console.log('Saved all notes.');
     }
 
-    // --- 新增：导出功能 ---
     function exportAsTxt() {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
-
         const textarea = activePage.querySelector('.note-area');
         const content = textarea.value;
         const title = activePage.querySelector('h2').textContent.trim();
         const filename = `${title}_${getFormattedDate()}.txt`;
-
         const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
         triggerDownload(blob, filename);
         showSaveStatus('TXT 已导出');
@@ -342,25 +343,17 @@
     function exportAsCsv() {
         const activePage = document.querySelector('.page.active');
         if (!activePage) return;
-
         const textarea = activePage.querySelector('.note-area');
         const content = textarea.value;
         const title = activePage.querySelector('h2').textContent.trim();
         const filename = `${title}_${getFormattedDate()}.csv`;
-        
         let csvContent = '';
-
-        // 针对“钱本”进行特殊处理
         if (activePage.id === 'money') {
             const lines = content.split('\n');
-            // 将 " | " 替换为 ","
             csvContent = lines.map(line => line.replace(/\s*\|\s*/g, ',')).join('\n');
         } else {
-            // 对于其他页面，将整个内容放入一个单元格，并处理双引号
             csvContent = `"${content.replace(/"/g, '""')}"`;
         }
-        
-        // 添加 BOM 以确保 Excel 正确识别 UTF-8 编码（特别是中文）
         const bom = '\uFEFF';
         const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
         triggerDownload(blob, filename);
@@ -379,15 +372,22 @@
       }
     });
 
-    saveCurrentBtn.addEventListener('click', saveCurrentNote);
-    saveAllBtn.addEventListener('click', () => {
-        saveAllNotes();
-        showSaveStatus('全部笔记已保存 ✓');
+    // 更新：使用事件委托来处理所有操作按钮的点击
+    document.body.addEventListener('click', function(e) {
+        if (e.target.classList.contains('save-current-btn')) {
+            saveCurrentNote();
+        }
+        if (e.target.classList.contains('save-all-btn')) {
+            saveAllNotes();
+            showSaveStatus('全部笔记已保存 ✓');
+        }
+        if (e.target.classList.contains('export-txt-btn')) {
+            exportAsTxt();
+        }
+        if (e.target.classList.contains('export-csv-btn')) {
+            exportAsCsv();
+        }
     });
-
-    // 新增导出按钮的事件监听
-    exportTxtBtn.addEventListener('click', exportAsTxt);
-    exportCsvBtn.addEventListener('click', exportAsCsv);
 
     let autoSaveTimer;
     textareas.forEach(textarea => {
