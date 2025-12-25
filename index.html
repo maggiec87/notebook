@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notebook - 我的手账本</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* --- 基础与配色 --- */
+    :root {
+      --bg-color: #fdfaf3;
+      --card-color: #ffffff;
+      --text-color: #3d352e;
+      --muted-color: #8a7e74;
+      --accent-color: #a08c7d;
+      --action-color: #6a8b75; /* 保存按钮颜色 */
+      --export-color: #4a6e8a; /* 导出按钮颜色，柔和的蓝色 */
+      --shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+      --font-handwriting: "Kaiti", "STKaiti", "KaiTi_GB2312", "Comic Sans MS", cursive, sans-serif;
+      --font-main: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background-color: var(--bg-color);
+      font-family: var(--font-main);
+      color: var(--text-color);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    header { text-align: center; margin: 20px 0 30px; }
+    h1 { font-family: var(--font-handwriting); font-size: 2.5rem; margin: 0; }
+    .subtitle { color: var(--muted-color); font-size: 0.9rem; margin-top: 8px; }
+
+    /* --- 导航 --- */
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      padding-bottom: 20px;
+      border-bottom: 2px dashed var(--accent-color);
+      margin-bottom: 20px;
+    }
+    .nav-button {
+      background-color: #fff;
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease-in-out;
+    }
+    .nav-button:hover { background-color: var(--accent-color); color: #fff; transform: translateY(-2px); }
+    .nav-button.active { background-color: var(--text-color); border-color: var(--text-color); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+    /* --- 操作按钮区域 --- */
+    .actions-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .action-button {
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .action-button:hover { transform: translateY(-2px); }
+    
+    /* 保存按钮样式 */
+    .save-btn { background-color: var(--action-color); box-shadow: 0 3px 8px rgba(106, 139, 117, 0.3); }
+    .save-btn:hover { background-color: #587965; box-shadow: 0 5px 12px rgba(106, 139, 117, 0.4); }
+    .save-all { background-color: #c5a992; box-shadow: 0 3px 8px rgba(197, 169, 146, 0.4); }
+    .save-all:hover { background-color: #b3957c; box-shadow: 0 5px 12px rgba(197, 169, 146, 0.5); }
+    
+    /* 导出按钮样式 */
+    .export-btn { background-color: var(--export-color); box-shadow: 0 3px 8px rgba(74, 110, 138, 0.3); }
+    .export-btn:hover { background-color: #3b5a72; box-shadow: 0 5px 12px rgba(74, 110, 138, 0.4); }
+
+    .save-status {
+      color: var(--action-color);
+      font-weight: bold;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      min-width: 100px; /* 占位防止按钮移动 */
+      text-align: left;
+    }
+    .save-status.visible { opacity: 1; }
+
+    /* --- 页面卡片 --- */
+    .page { display: none; background-color: var(--card-color); border-radius: 12px; padding: 25px 30px; box-shadow: var(--shadow); animation: fadeIn 0.5s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    h2 { font-family: var(--font-handwriting); font-size: 1.8rem; margin: 0 0 15px; }
+
+    /* --- 表单元素 --- */
+    .note-area {
+      width: 100%;
+      min-height: 250px;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #e0d5cb;
+      font-family: var(--font-handwriting);
+      font-size: 1.1rem;
+      line-height: 1.8;
+      background-color: #fefdfb;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+    .note-area:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(160, 140, 125, 0.2); }
+
+    /* --- 底部 --- */
+    footer { text-align: center; color: var(--muted-color); font-size: 0.8rem; margin-top: 40px; padding-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>我的手账本</h1>
+    <p class="subtitle">一个长期陪伴你的个人笔记本，支持导出与自动保存。</p>
+  </header>
+
+  <nav class="nav" id="notebook-nav">
+    <button class="nav-button active" data-target="book">📖 读书</button>
+    <button class="nav-button" data-target="podcast">🎧 播客</button>
+    <button class="nav-button" data-target="lyrics">🎵歌词</button>
+    <button class="nav-button" data-target="poems">✍️写诗</button>
+    <button class="nav-button" data-target="inspire">💡灵感</button>
+    <button class="nav-button" data-target="food">🍽️食物</button>
+    <button class="nav-button" data-target="money">💰钱钱</button>
+  </nav>
+
+  <!-- 更新：操作按钮栏 -->
+  <div class="actions-bar">
+    <button id="save-current-btn" class="action-button save-btn">保存本页</button>
+    <button id="save-all-btn" class="action-button save-all">✨ 保存全部</button>
+    <span id="save-status" class="save-status"></span>
+    <button id="export-txt-btn" class="action-button export-btn">导出TXT</button>
+    <button id="export-csv-btn" class="action-button export-btn">导出CSV</button>
+  </div>
+
+  <main>
+    <section id="book" class="page active">
+      <h2>读书笔记</h2>
+      <textarea class="note-area" data-persist="book-notes" placeholder=""></textarea>
+    </section>
+
+    <section id="podcast" class="page">
+      <h2>播客</h2>
+      <textarea class="note-area" data-persist="podcast-notes" placeholder=""></textarea>
+    </section>
+
+    <section id="lyrics" class="page">
+      <h2>歌词</h2>
+      <textarea class="note-area" data-persist="lyrics-notes" placeholder=""></textarea>
+    </section>
+
+    <section id="poems" class="page">
+      <h2>写诗</h2>
+      <textarea class="note-area" data-persist="poems-notes" placeholder=""></textarea>
+    </section>
+
+    <section id="inspire" class="page">
+      <h2>灵感</h2>
+      <textarea class="note-area" data-persist="inspire-notes" placeholder="捕捉那些稍纵即逝的灵感火花"></textarea>
+    </section>
+
+    <section id="food" class="page">
+      <h2>食物</h2>
+      <textarea class="note-area" data-persist="food-notes" placeholder=""></textarea>
+    </section>
+
+    <section id="money" class="page">
+      <h2>金钱</h2>
+      <textarea class="note-area" data-persist="money-notes" placeholder=""></textarea>
+    </section>
+  </main>
+
+  <footer>
+    <p>数据存储在本地浏览器 (LocalStorage)，请勿在公用电脑上使用。更换设备前请手动备份内容。</p>
+  </footer>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // --- 获取元素 ---
+    const nav = document.getElementById('notebook-nav');
+    const pages = document.querySelectorAll('.page');
+    const textareas = document.querySelectorAll('.note-area');
+    const saveCurrentBtn = document.getElementById('save-current-btn');
+    const saveAllBtn = document.getElementById('save-all-btn');
+    const saveStatus = document.getElementById('save-status');
+    const exportTxtBtn = document.getElementById('export-txt-btn'); // 新增
+    const exportCsvBtn = document.getElementById('export-csv-btn'); // 新增
+
+    let statusTimer;
+
+    // --- 辅助函数 ---
+
+    // 获取格式化的日期字符串 YYYY-MM-DD
+    function getFormattedDate() {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // 创建并触发下载
+    function triggerDownload(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // --- 功能函数 ---
+
+    function showSaveStatus(message) {
+      clearTimeout(statusTimer);
+      saveStatus.textContent = message;
+      saveStatus.classList.add('visible');
+      statusTimer = setTimeout(() => {
+        saveStatus.classList.remove('visible');
+      }, 2000);
+    }
+
+    function saveCurrentNote() {
+      const activePage = document.querySelector('.page.active');
+      if (!activePage) return;
+      const textarea = activePage.querySelector('.note-area');
+      const key = textarea.dataset.persist;
+      localStorage.setItem(key, textarea.value);
+      console.log(`Saved current: ${key}`);
+      showSaveStatus('当前页已保存 ✓');
+    }
+
+    function saveAllNotes() {
+      textareas.forEach(textarea => {
+        const key = textarea.dataset.persist;
+        if (key) localStorage.setItem(key, textarea.value);
+      });
+      console.log('Saved all notes.');
+    }
+
+    // --- 新增：导出功能 ---
+    function exportAsTxt() {
+        const activePage = document.querySelector('.page.active');
+        if (!activePage) return;
+
+        const textarea = activePage.querySelector('.note-area');
+        const content = textarea.value;
+        const title = activePage.querySelector('h2').textContent.trim();
+        const filename = `${title}_${getFormattedDate()}.txt`;
+
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        triggerDownload(blob, filename);
+        showSaveStatus('TXT 已导出');
+    }
+
+    function exportAsCsv() {
+        const activePage = document.querySelector('.page.active');
+        if (!activePage) return;
+
+        const textarea = activePage.querySelector('.note-area');
+        const content = textarea.value;
+        const title = activePage.querySelector('h2').textContent.trim();
+        const filename = `${title}_${getFormattedDate()}.csv`;
+        
+        let csvContent = '';
+
+        // 针对“钱本”进行特殊处理
+        if (activePage.id === 'money') {
+            const lines = content.split('\n');
+            // 将 " | " 替换为 ","
+            csvContent = lines.map(line => line.replace(/\s*\|\s*/g, ',')).join('\n');
+        } else {
+            // 对于其他页面，将整个内容放入一个单元格，并处理双引号
+            csvContent = `"${content.replace(/"/g, '""')}"`;
+        }
+        
+        // 添加 BOM 以确保 Excel 正确识别 UTF-8 编码（特别是中文）
+        const bom = '\uFEFF';
+        const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+        triggerDownload(blob, filename);
+        showSaveStatus('CSV 已导出');
+    }
+
+    // --- 事件监听 ---
+
+    nav.addEventListener('click', function(e) {
+      if (e.target.tagName === 'BUTTON') {
+        const targetId = e.target.dataset.target;
+        nav.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        pages.forEach(page => page.classList.toggle('active', page.id === targetId));
+        localStorage.setItem('notebook-active-page', targetId);
+      }
+    });
+
+    saveCurrentBtn.addEventListener('click', saveCurrentNote);
+    saveAllBtn.addEventListener('click', () => {
+        saveAllNotes();
+        showSaveStatus('全部笔记已保存 ✓');
+    });
+
+    // 新增导出按钮的事件监听
+    exportTxtBtn.addEventListener('click', exportAsTxt);
+    exportCsvBtn.addEventListener('click', exportAsCsv);
+
+    let autoSaveTimer;
+    textareas.forEach(textarea => {
+      textarea.addEventListener('input', () => {
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(saveAllNotes, 1000);
+      });
+    });
+
+    window.addEventListener('beforeunload', saveAllNotes);
+
+    // --- 初始化 ---
+    function initialize() {
+      textareas.forEach(textarea => {
+        const key = textarea.dataset.persist;
+        if (key) {
+          const savedValue = localStorage.getItem(key);
+          if (savedValue !== null) textarea.value = savedValue;
+        }
+      });
+      const lastActivePageId = localStorage.getItem('notebook-active-page');
+      const targetButton = lastActivePageId ? nav.querySelector(`[data-target="${lastActivePageId}"]`) : nav.querySelector('.nav-button');
+      if (targetButton) targetButton.click();
+    }
+    
+    initialize();
+  });
+</script>
+
+</body>
+</html>
