@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>Notebook - 我的手账本</title>
+  <title>Notebook-我的手账本</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     /* --- 基础与配色 --- */
@@ -125,6 +125,68 @@
 
     /* --- 底部 --- */
     footer { text-align: center; color: var(--muted-color); font-size: 0.8rem; margin-top: 40px; padding-bottom: 20px; }
+
+
+    /* --- 移动端适配 (响应式设计) --- */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+
+      header {
+        margin: 15px 0 20px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .nav {
+        gap: 8px;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+      }
+      
+      .nav-button {
+        padding: 6px 14px;
+        font-size: 0.9rem;
+      }
+
+      /* 关键改动：将操作按钮垂直堆叠，方便移动端点击 */
+      .actions-bar {
+        flex-direction: column;
+        align-items: stretch; /* 让内部元素撑满容器宽度 */
+        gap: 10px;
+      }
+
+      .action-button {
+        width: 100%; /* 按钮宽度100% */
+      }
+      
+      .save-status {
+        min-width: 0; /* 重置最小宽度 */
+        text-align: center; /* 居中显示保存状态 */
+        margin: 5px 0;
+      }
+
+      .page {
+        padding: 20px 15px;
+      }
+
+      h2 {
+        font-size: 1.6rem;
+      }
+
+      .note-area {
+        min-height: 200px; /* 减小在小屏幕上的最小高度 */
+        font-size: 1rem;
+      }
+
+      footer {
+        margin-top: 30px;
+        padding: 0 10px 15px;
+      }
+    }
   </style>
 </head>
 <body>
